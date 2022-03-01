@@ -1,0 +1,5 @@
+AuthServer => 5001
+Client1 => 5006
+Client2 => 5011
+API1 => 5016
+API2=> 5021
