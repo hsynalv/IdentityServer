@@ -20,13 +20,28 @@ namespace IdentityServer.Client1
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication(opt =>
+            {
+                opt.DefaultAuthenticateScheme = "Cookies";
+                opt.DefaultChallengeScheme = "oidc";
+            }).AddCookie("Cookies").AddOpenIdConnect("oidc", opt =>
+            {
+                opt.SignInScheme = "Cookies";
+                opt.Authority = "https://localhost:5001";
+                opt.ClientId = "Client1-Mvc";
+                opt.ClientSecret = "Secret";
+                opt.ResponseType = "code id_token";
+                opt.GetClaimsFromUserInfoEndpoint = true;
+                opt.SaveTokens = true;
+                opt.Scope.Add("api1.read");
+                opt.Scope.Add("offline_access");
+            });
+
             services.AddControllersWithViews();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -36,14 +51,13 @@ namespace IdentityServer.Client1
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

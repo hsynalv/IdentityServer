@@ -1,5 +1,9 @@
-﻿using IdentityServer4.Models;
+﻿using IdentityServer4;
+using IdentityServer4.Models;
+using IdentityServer4.Test;
+using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace IdentityServer.AuthServer
 {
@@ -8,12 +12,12 @@ namespace IdentityServer.AuthServer
         public static IEnumerable<ApiResource> GetApiResources => new ApiResource[]
         {
             new ApiResource("resource_api1")
-            { 
+            {
                 Scopes = {"api1.read", "api1.write", "api1.update" },
                 ApiSecrets = new[]{new Secret("secretApi1".Sha512())},  // Basic Auth Doğrulama için 
             },
             new ApiResource("resource_api2")
-            { 
+            {
                 Scopes = {"api2.read", "api2.write", "api2.update" },
                 ApiSecrets = new[]{new Secret("secretApi2".Sha512())},  // Basic Auth Doğrulama için 
             }
@@ -31,6 +35,34 @@ namespace IdentityServer.AuthServer
                 new ApiScope("api2.update","API 2 için update izni")
             };
         }
+
+
+        public static IEnumerable<IdentityResource> GetIdentityResources =>
+            new IdentityResource[]
+            {
+                new IdentityResources.OpenId(),  // Olmazsa olmaz!!!
+                new IdentityResources.Profile(),
+                new IdentityResources.Email(),
+            };
+
+        public static List<TestUser> GetUsers =>
+            new List<TestUser>()
+            {
+                new TestUser()
+                {
+                    SubjectId = "1",
+                    Username = "beyazskorsky",
+                    Password = "Password12*",
+                    Claims = new[]{ new Claim("given_name","Hüseyin"), new Claim("family_name","Alav")}
+                },
+                new TestUser()
+                {
+                    SubjectId = "2",
+                    Username = "hhsynalv",
+                    Password = "Password12*",
+                    Claims = new[]{ new Claim("given_name","Hüseyin"), new Claim("family_name","Alav")}
+                }
+            };
 
         public static IEnumerable<Client> GetClients()
         {
@@ -52,6 +84,32 @@ namespace IdentityServer.AuthServer
                     ClientSecrets = new []{new Secret("Secret2".Sha512())},
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
                     AllowedScopes = { "api2.read", "api2.write", "api2.update" }
+                },
+
+                new Client
+                {
+                    ClientId = "Client1-Mvc",
+                    RequirePkce = false,
+                    ClientName = "Client 1 MVC Uygulaması",
+                    ClientSecrets = new []{new Secret("Secret".Sha512())},
+                    AllowedGrantTypes = GrantTypes.Hybrid,
+                    RedirectUris = new List<string>{"https://localhost:5006/signin-oidc"},
+                    PostLogoutRedirectUris = new List<string>{ "https://localhost:5006/signout-callback-oidc" },
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.OfflineAccess,
+                        "api1.read"
+                    },
+
+                    AccessTokenLifetime = 2*60*60,
+                    RefreshTokenUsage = TokenUsage.OneTimeOnly,
+                    AbsoluteRefreshTokenLifetime = (int)(DateTime.Now.AddDays(60) - DateTime.Now).TotalSeconds,
+                    RefreshTokenExpiration = TokenExpiration.Absolute,
+                    AllowOfflineAccess=true
+
+
                 }
             };
         }
