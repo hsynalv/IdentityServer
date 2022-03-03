@@ -43,6 +43,13 @@ namespace IdentityServer.AuthServer
                 new IdentityResources.OpenId(),  // Olmazsa olmaz!!!
                 new IdentityResources.Profile(),
                 new IdentityResources.Email(),
+                new IdentityResource()
+                { 
+                    Name = "CountryAndCity",
+                    DisplayName= "Ülke ve Şehir",
+                    Description= "Kullanıcının ülke ve şehir bilgisi",
+                    UserClaims = {"Country","City"}
+                }
             };
 
         public static List<TestUser> GetUsers =>
@@ -53,14 +60,26 @@ namespace IdentityServer.AuthServer
                     SubjectId = "1",
                     Username = "beyazskorsky",
                     Password = "Password12*",
-                    Claims = new[]{ new Claim("given_name","Hüseyin"), new Claim("family_name","Alav")}
+                    Claims = new[]
+                    { 
+                        new Claim("given_name","Hüseyin"), 
+                        new Claim("family_name","Alav"),
+                        new Claim("Country","Türkiye"),
+                        new Claim("City","Samsun"),
+                    }
                 },
                 new TestUser()
                 {
                     SubjectId = "2",
                     Username = "hhsynalv",
                     Password = "Password12*",
-                    Claims = new[]{ new Claim("given_name","Hüseyin"), new Claim("family_name","Alav")}
+                    Claims = new[]
+                    { 
+                        new Claim("given_name","Hüseyin"), 
+                        new Claim("family_name","Alav"),                
+                        new Claim("Country","Türkiye"),
+                        new Claim("City","Samsun"),
+                    }
                 }
             };
 
@@ -100,14 +119,16 @@ namespace IdentityServer.AuthServer
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.OfflineAccess,
-                        "api1.read"
+                        "api1.read",
+                        "CountryAndCity"
                     },
 
                     AccessTokenLifetime = 2*60*60,
                     RefreshTokenUsage = TokenUsage.OneTimeOnly,
                     AbsoluteRefreshTokenLifetime = (int)(DateTime.Now.AddDays(60) - DateTime.Now).TotalSeconds,
                     RefreshTokenExpiration = TokenExpiration.Absolute,
-                    AllowOfflineAccess=true
+                    AllowOfflineAccess=true,
+                    RequireConsent=true, // Onay sayfası çıkartır.
 
 
                 }
