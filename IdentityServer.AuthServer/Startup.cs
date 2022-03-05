@@ -1,6 +1,11 @@
+using IdentityServer.AuthServer.Models;
+using IdentityServer.AuthServer.Repositories;
+using IdentityServer.AuthServer.Repositories.Abstract;
+using IdentityServer.AuthServer.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -23,13 +28,23 @@ namespace IdentityServer.AuthServer
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddDbContext<CustomDbContext>(opt =>
+            {
+                opt.UseSqlServer(Configuration.GetConnectionString("SqlServer"));
+            });
+
+
+            services.AddScoped<ICustomUserRepository, CustomUserRepository>();
+
+
             services.AddIdentityServer()
                 .AddInMemoryApiResources(Config.GetApiResources)
                 .AddInMemoryApiScopes(Config.GetApiScopes())
                 .AddInMemoryClients(Config.GetClients())
                 .AddDeveloperSigningCredential()
                 .AddInMemoryIdentityResources(Config.GetIdentityResources)
-                .AddTestUsers(Config.GetUsers);
+                .AddProfileService<CustomProfileService>();
+                //.AddTestUsers(Config.GetUsers);
 
 
 

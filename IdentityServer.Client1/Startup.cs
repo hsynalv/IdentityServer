@@ -39,6 +39,7 @@ namespace IdentityServer.Client1
                 opt.Scope.Add("api1.read");
                 opt.Scope.Add("offline_access");
                 opt.Scope.Add("CountryAndCity");
+                opt.Scope.Add("email");
 
                 opt.ClaimActions.MapUniqueJsonKey("Country", "Country");
                 opt.ClaimActions.MapUniqueJsonKey("City", "City");

@@ -119,6 +119,7 @@ namespace IdentityServer.AuthServer
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.OfflineAccess,
+                        IdentityServerConstants.StandardScopes.Email,
                         "api1.read",
                         "CountryAndCity"
                     },
