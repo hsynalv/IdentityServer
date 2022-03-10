@@ -26,25 +26,31 @@ namespace IdentityServer.Client1
             services.AddAuthentication(opt =>
             {
                 opt.DefaultAuthenticateScheme = "Cookies";
-                opt.DefaultChallengeScheme = "oidc";
-            }).AddCookie("Cookies").AddOpenIdConnect("oidc", opt =>
+                //opt.DefaultChallengeScheme = "oidc";
+            }).AddCookie("Cookies", opt =>
             {
-                opt.SignInScheme = "Cookies";
-                opt.Authority = "https://localhost:5001";
-                opt.ClientId = "Client1-Mvc";
-                opt.ClientSecret = "Secret";
-                opt.ResponseType = "code id_token";
-                opt.GetClaimsFromUserInfoEndpoint = true;
-                opt.SaveTokens = true;
-                opt.Scope.Add("api1.read");
-                opt.Scope.Add("offline_access");
-                opt.Scope.Add("CountryAndCity");
-                opt.Scope.Add("email");
-
-                opt.ClaimActions.MapUniqueJsonKey("Country", "Country");
-                opt.ClaimActions.MapUniqueJsonKey("City", "City");
-
+                opt.LoginPath = "/Login/Index";
             });
+
+
+            //.AddCookie("Cookies").AddOpenIdConnect("oidc", opt =>
+            //{
+            //    opt.SignInScheme = "Cookies";
+            //    opt.Authority = "https://localhost:5001";
+            //    opt.ClientId = "Client1-Mvc";
+            //    opt.ClientSecret = "Secret";
+            //    opt.ResponseType = "code id_token";
+            //    opt.GetClaimsFromUserInfoEndpoint = true;
+            //    opt.SaveTokens = true;
+            //    opt.Scope.Add("api1.read");
+            //    opt.Scope.Add("offline_access");
+            //    opt.Scope.Add("CountryAndCity");
+            //    opt.Scope.Add("email");
+
+            //    opt.ClaimActions.MapUniqueJsonKey("Country", "Country");
+            //    opt.ClaimActions.MapUniqueJsonKey("City", "City");
+
+            //});
 
             services.AddControllersWithViews();
         }

@@ -43,7 +43,8 @@ namespace IdentityServer.AuthServer
                 .AddInMemoryClients(Config.GetClients())
                 .AddDeveloperSigningCredential()
                 .AddInMemoryIdentityResources(Config.GetIdentityResources)
-                .AddProfileService<CustomProfileService>();
+                .AddProfileService<CustomProfileService>()
+                .AddResourceOwnerValidator<ResourceOwnerPasswordValidator>();
                 //.AddTestUsers(Config.GetUsers);
 
 

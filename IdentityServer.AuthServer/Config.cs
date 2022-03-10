@@ -153,7 +153,32 @@ namespace IdentityServer.AuthServer
                     RedirectUris= { "http://localhost:4200/callback" },
                     AllowedCorsOrigins = { "http://localhost:4200/" },
                     PostLogoutRedirectUris = { "http://localhost:4200/" }
+                },
+
+                new Client
+                {
+                    ClientId = "Client1-ResourceOwner-Mvc",
+                    ClientName = "Client 1 MVC Uygulaması",
+                    ClientSecrets = new []{new Secret("Secret".Sha512())},
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.OfflineAccess,
+                        IdentityServerConstants.StandardScopes.Email,
+                        "api1.read",
+                        "CountryAndCity"
+                    },
+                    AccessTokenLifetime = 2*60*60,
+                    RefreshTokenUsage = TokenUsage.OneTimeOnly,
+                    AbsoluteRefreshTokenLifetime = (int)(DateTime.Now.AddDays(60) - DateTime.Now).TotalSeconds,
+                    RefreshTokenExpiration = TokenExpiration.Absolute,
+                    AllowOfflineAccess=true,
+
+
                 }
+
             };
         }
     }
