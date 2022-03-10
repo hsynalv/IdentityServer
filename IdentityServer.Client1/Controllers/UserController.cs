@@ -50,8 +50,8 @@ namespace IdentityServer.Client1.Controllers
 
             RefreshTokenRequest request = new RefreshTokenRequest
             {
-                ClientId = configuration["Client-MVC:ClientId"],
-                ClientSecret = configuration["Client-MVC:ClientSecret"],
+                ClientId = configuration["Client-ResourceOwner:ClientId"],
+                ClientSecret = configuration["Client-ResourceOwner:ClientSecret"],
                 RefreshToken = resfreshToken,
                 Address = discovery.TokenEndpoint,
             };

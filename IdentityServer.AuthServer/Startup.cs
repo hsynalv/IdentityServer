@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace IdentityServer.AuthServer
@@ -36,16 +37,38 @@ namespace IdentityServer.AuthServer
 
             services.AddScoped<ICustomUserRepository, CustomUserRepository>();
 
+            var assembleyName = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
 
             services.AddIdentityServer()
-                .AddInMemoryApiResources(Config.GetApiResources)
-                .AddInMemoryApiScopes(Config.GetApiScopes())
-                .AddInMemoryClients(Config.GetClients())
+                .AddConfigurationStore(opt =>
+                {
+                    opt.ConfigureDbContext = context =>
+                    {
+                        context.UseSqlServer(Configuration.GetConnectionString("SqlServer"), sqlopt =>
+                        {
+                            sqlopt.MigrationsAssembly(assembleyName);
+                        });
+                    };
+                })
+                .AddOperationalStore(opt =>
+                {
+                    opt.ConfigureDbContext = context =>
+                    {
+                        context.UseSqlServer(Configuration.GetConnectionString("SqlServer"), sqlopt =>
+                        {
+                            sqlopt.MigrationsAssembly(assembleyName);
+                        });
+                    };
+                })
+                //.AddInMemoryApiResources(Config.GetApiResources)
+                //.AddInMemoryApiScopes(Config.GetApiScopes())
+                //.AddInMemoryClients(Config.GetClients())
+                //.AddInMemoryIdentityResources(Config.GetIdentityResources)
+                //.AddTestUsers(Config.GetUsers)
                 .AddDeveloperSigningCredential()
-                .AddInMemoryIdentityResources(Config.GetIdentityResources)
                 .AddProfileService<CustomProfileService>()
                 .AddResourceOwnerValidator<ResourceOwnerPasswordValidator>();
-                //.AddTestUsers(Config.GetUsers);
+                
 
 
 
