@@ -132,6 +132,27 @@ namespace IdentityServer.AuthServer
                     RequireConsent=true, // Onay sayfası çıkartır.
 
 
+                },
+
+                new Client
+                {
+                    ClientId="js-client",
+                    RequireClientSecret=false,
+                    ClientName="Js Client Angular",
+                    AllowedGrantTypes = GrantTypes.Code,
+                    AllowedScopes =
+                    {
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.OfflineAccess,
+                        IdentityServerConstants.StandardScopes.Email,
+                        "api1.read",
+                        "CountryAndCity",
+                        "Roles",
+                    },
+                    RedirectUris= { "http://localhost:4200/callback" },
+                    AllowedCorsOrigins = { "http://localhost:4200/" },
+                    PostLogoutRedirectUris = { "http://localhost:4200/" }
                 }
             };
         }
