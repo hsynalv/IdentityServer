@@ -1,3 +1,4 @@
+using IdentityServer.Client1.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -23,6 +24,9 @@ namespace IdentityServer.Client1
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
+            services.AddScoped<IApiResourceHttpClient, ApiResourceHttpClient>();
+
             services.AddAuthentication(opt =>
             {
                 opt.DefaultAuthenticateScheme = "Cookies";

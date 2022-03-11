@@ -1,5 +1,6 @@
 ﻿using IdentityModel.Client;
 using IdentityServer.Client1.Models;
+using IdentityServer.Client1.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -17,10 +18,12 @@ namespace IdentityServer.Client1.Controllers
     public class LoginController : Controller
     {
         private readonly IConfiguration Configuration;
+        private readonly IApiResourceHttpClient _apiResourceHttpClient;
 
-        public LoginController(IConfiguration configuration)
+        public LoginController(IConfiguration configuration, IApiResourceHttpClient apiResourceHttpClient)
         {
             Configuration = configuration;
+            _apiResourceHttpClient = apiResourceHttpClient;
         }
 
         public IActionResult Index()
@@ -85,6 +88,29 @@ namespace IdentityServer.Client1.Controllers
 
             return RedirectToAction("Index","User");
             
+        }
+
+        public IActionResult SignUp()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> SignUp(UserSaveViewModel userSaveViewModel)
+        {
+            if (!ModelState.IsValid) return View();
+
+            var result = await _apiResourceHttpClient.SaveUserViewModel(userSaveViewModel);
+
+            if (result != null)
+            {
+                result.ForEach(error =>
+                {
+                    ModelState.AddModelError("", error);
+                });
+                return View();
+            }
+            return RedirectToAction("Index");
         }
     }
 }
